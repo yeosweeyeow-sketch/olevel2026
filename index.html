@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>O-Level Invigilation Command Center (2026)</title>
+    <!-- Tailwind CSS Engine -->
+    <script src="https://jsdelivr.net"></script>
+    <!-- SheetJS Library for seamless Excel export functionality -->
+    <script src="https://cloudflare.com"></script>
+    <style>
+        @import url('https://googleapis.com');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0b0f19; }
+        .glass-card { background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.06); }
+        .active-tab { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: #ffffff; box-shadow: 0 4px 20px rgba(29, 78, 216, 0.4); }
+    </style>
+</head>
+<body class="text-gray-100 min-h-screen antialiased selection:bg-blue-500/30">
+
+    <!-- Glowing Background Anchors -->
+    <div class="absolute top-0 left-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute top-1/3 right-1/4 w-96 h-96 bg-emerald-600/5 rounded-full blur-3xl pointer-events-none"></div>
+
+    <!-- Top Premium Navigation Shell -->
+    <header class="glass-card sticky top-0 z-50 border-b border-gray-800/60 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="h-10 w-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
+                    <span class="text-lg font-black text-white">Ω</span>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent">O-Level Invigilation Command</h1>
+                    <p class="text-xs font-medium text-gray-400 tracking-wider uppercase mt-0.5">Cycle: Oct / Nov 2026</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-4 text-xs bg-gray-900/80 px-4 py-2.5 rounded-xl border border-gray-800/80">
+                <div class="text-right">
+                    <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest block mb-0.5">CPE Hotline Hub</span>
+                    <span class="text-gray-300 font-medium">Swee Yeow: <span class="text-blue-400 font-mono font-bold">96267367</span></span>
+                    <span class="text-gray-600 mx-1.5">|</span>
+                    <span class="text-gray-300 font-medium">Jason Chow: <span class="text-blue-400 font-mono font-bold">91732859</span></span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Operational Main Frame -->
+    <main class="max-w-7xl mx-auto px-6 py-8 relative">
+        
+        <!-- Control Interface Strip -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 bg-gray-900/30 p-2 rounded-2xl border border-gray-800/40">
+            <nav class="flex p-1 bg-gray-950/60 rounded-xl border border-gray-800/60 w-full md:w-auto">
+                <button id="tab-staff" onclick="switchTab('staff')" class="px-5 py-2.5 rounded-lg text-xs font-bold tracking-wide uppercase cursor-pointer transition-all duration-300 text-gray-400 hover:text-white active-tab">👤 Staff Matrix</button>
+                <button id="tab-date" onclick="switchTab('date')" class="px-5 py-2.5 rounded-lg text-xs font-bold tracking-wide uppercase cursor-pointer transition-all duration-300 text-gray-400 hover:text-white">📅 Date Timeline</button>
+            </nav>
+            <button onclick="exportToExcel()" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold tracking-wider uppercase px-5 py-3 rounded-xl shadow-lg shadow-emerald-950/40 transition-all duration-300 transform hover:-translate-y-0.5 cursor-pointer flex items-center gap-2 w-full md:w-auto justify-center">
+                📥 Export Master Sheet (.xlsx)
+            </button>
+        </div>
+
+        <!-- VIEW 1: STAFF MANAGEMENT MATRIX -->
+        <section id="view-staff" class="space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Selector Control Module -->
+                <div class="glass-card p-6 rounded-2xl flex flex-col justify-between">
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2">Select Faculty Member</label>
+                        <select id="staff-select" onchange="renderStaffView()" class="w-full bg-gray-950/80 border border-gray-800 text-gray-200 rounded-xl p-3 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition duration-200 cursor-pointer"></select>
+                    </div>
+                    <div class="mt-4 text-xs text-gray-400 leading-relaxed border-t border-gray-800/60 pt-4">
+                        Modifying cell deployment states below instantly updates overall school allocation tallies in real-time.
+                    </div>
+                </div>
+                
+                <!-- Analytics Rings -->
+                <div class="glass-card p-6 rounded-2xl flex items-center gap-5 border border-emerald-500/10 bg-gradient-to-br from-gray-900/40 to-emerald-950/5">
+                    <div class="h-14 w-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 text-emerald-400 text-xl font-bold shadow-inner" id="staff-total-ring">
+                        ✓
+                    </div>
+                    <div>
+                        <span class="block text-[10px] font-bold text-emerald-400/70 uppercase tracking-widest mb-0.5">Active Invigilations</span>
+                        <span id="staff-total-count" class="text-3xl font-black text-white tracking-tight">0</span>
+                    </div>
+                </div>
+
+                <div class="glass-card p-6 rounded-2xl flex items-center gap-5 border border-amber-500/10 bg-gradient-to-br from-gray-900/40 to-amber-950/5">
+                    <div class="h-14 w-14 rounded-2xl bg-amber-500/10 flex items-center justify-center border border-amber-500/20 text-amber-400 text-xl font-bold shadow-inner" id="staff-sb-ring">
+                        ⚠
+                    </div>
+                    <div>
+                        <span class="block text-[10px] font-bold text-amber-400/70 uppercase tracking-widest mb-0.5">Standby Reserve (SB)</span>
+                        <span id="staff-sb-count" class="text-3xl font-black text-white tracking-tight">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Interactive Table Shell -->
+            <div class="glass-card rounded-2xl border border-gray-800/80 overflow-hidden shadow-2xl shadow-black/40">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm border-collapse">
+                        <thead>
+                            <tr class="bg-gray-950/80 text-gray-400 font-bold border-b border-gray-800/80 text-[10px] uppercase tracking-widest">
+                                <th class="p-4 pl-6">Session Date</th>
+                                <th class="p-4">Duty Status Assignment</th>
+                                <th class="p-4 pr-6">Paper Configuration & Schedule Parameters</th>
+                            </tr>
+                        </thead>
+                        <tbody id="staff-table-body" class="divide-y divide-gray-800/40"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 2: CHRONOLOGICAL DATE TIMELINE -->
+        <section id="view-date" class="hidden space-y-6">
+            <div class="glass-card p-6 rounded-2xl border border-gray-800/60 max-w-md">
+                <label class="block text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2">Target Examination Date Filter</label>
+                <select id="date-select" onchange="renderDateView()" class="w-full bg-gray-950/80 border border-gray-800 text-gray-200 rounded-xl p-3 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition duration-200 cursor-pointer"></select>
+            </div>
+
+            <div id="date-sessions-container" class="grid grid-cols-1 lg:grid-cols-2 gap-6"></div>
+        </section>
+    </main>
+
+    <script>
+        // Data Store Matrices
+        let staffRoster = [
+            { name: "Foo Shuan Chou", data: {"2026-10-15": "1", "2026-10-19": "1", "2026-10-21": "1", "2026-10-22": "SB", "2026-10-23": "1", "2026-10-26 (AM)": "1", "2026-10-27 (AM)": "1", "2026-10-28 (AM)": "SB", "2026-11-02 (AM)": "SB", "2026-11-02 PM": "SB", "2026-11-03 AM": "1", "2026-11-10 AM": "1"} },
+            { name: "Kelly Tan Shi Hui", data: {"2026-10-15": "1", "2026-10-19": "1", "2026-10-20 (PM)": "SB", "2026-10-21": "1", "2026-10-23": "1", "2026-10-26 (AM)": "1", "2026-10-26 (PM)": "1", "2026-10-27 (AM)": "1", "2026-10-28 (AM)": "1", "2026-11-02 PM": "SB", "2026-11-03 AM": "1", "2026-11-10 AM": "1"} },
+            { name: "Lim Qun Hao", data: {"2026-10-15": "1", "2026-10-19": "1", "2026-10-20 (PM)": "1", "2026-10-21": "SB", "2026-10-23": "1", "2026-10-26 (AM)": "1", "2026-10-28 (AM)": "SB", "2026-10-28 (PM)": "1", "2026-10-30 (AM)": "SB", "2026-10-30 (PM)": "1", "2026-11-02 (AM)": "1"} },
+{ name: "Lok Sin Min (Luo Xinming)", data: {"2026-10-15": "1", "2026-10-19": "1", "2026-10-20 (AM)": "1", "2026-10-20 (PM)": "1", "2026-10-22": "SB", "2026-10-26 (AM)": "1", "2026-10-27 (AM)": "1", "2026-10-27 (PM)": "SB", "2026-10-28 (AM)": "1", "2026-10-30 (AM)": "1", "2026-11-02 (AM)": "1", "2026-11-03 AM": "1", "2026-11-03 PM": "SB"} },
+{ name: "Low Shi Ting", data: {"2026-10-15": "1", "2026-10-19": "1", "2026-10-20 (PM)": "1", "2026-10-21": "1", "2026-10-23": "1", "2026-10-26 (AM)": "SB", "2026-10-27 (PM)": "1", "2026-10-28 (AM)": "SB", "2026-10-30 (AM)": "1", "2026-11-02 (AM)": "1", "2026-11-03 AM": "1", "2026-11-10 AM": "1"} },
+{ name: "Maimunah Binte Ithnin", data: {"2026-10-07": "1", "2026-10-19": "1", "2026-10-20 (PM)": "SB", "2026-10-22": "1", "2026-10-26 (AM)": "1", "2026-10-26 (PM)": "1", "2026-10-27 (PM)": "SB", "2026-10-28 (AM)": "1", "2026-10-29 (AM)": "1", "2026-10-30 (AM)": "1", "2026-11-02 (AM)": "1", "2026-11-03 AM": "1", "2026-11-10 AM": "1"} },
+{ name: "Monisha Kaur", data: {"2026-10-19": "1", "2026-10-21": "1", "2026-10-22": "1", "2026-10-23": "SB", "2026-10-26 (AM)": "1", "2026-10-27 (AM)": "1", "2026-10-28 (AM)": "1", "2026-10-28 (PM)": "SB", "2026-10-29 (AM)": "1", "2026-10-30 (AM)": "SB", "2026-10-30 (PM)": "1", "2026-11-02 (AM)": "1", "2026-11-03 PM": "1"} },
+{ name: "Ng Chong Hern Bennedic", data: {"2026-10-07": "1", "2026-10-15": "1", "2026-10-19": "1", "2026-10-23": "1", "2026-10-26 (PM)": "1", "2026-10-27 (PM)": "1", "2026-10-28 (AM)": "SB", "2026-10-30 (AM)": "1", "2026-10-30 (PM)": "1", "2026-11-02 (AM)": "1", "2026-11-03 AM": "1", "2026-11-04 AM": "1", "2026-11-10 AM": "SB"} },
+{ name: "Oh Wen-Ci", data: {"2026-10-15": "1", "2026-10-19": "SB", "2026-10-21": "1", "2026-10-23": "1", "2026-10-26 (PM)": "1", "2026-10-27 (PM)": "1", "2026-10-28 (AM)": "SB", "2026-10-29 (AM)": "1", "2026-10-30 (PM)": "1", "2026-11-02 PM": "1", "2026-11-03 AM": "1", "2026-11-10 PM": "1"} },
+{ name: "Sim Zheng Xian", data: {"2026-10-15": "1", "2026-10-19": "SB", "2026-10-20 (PM)": "1", "2026-10-21": "1", "2026-10-23": "1", "2026-10-26 (AM)": "1", "2026-10-27 (PM)": "SB", "2026-10-28 (AM)": "1", "2026-10-29 (AM)": "1", "2026-11-02 PM": "1", "2026-11-02 (AM)": "SB", "2026-11-04 AM": "1", "2026-11-10 AM": "SB"} },
+{ name: "Susan Liang Siew Geok", data: {"2026-10-15": "SB", "2026-10-15 (1)": "SB", "2026-10-19": "1", "2026-10-21": "1", "2026-10-22": "1", "2026-10-26 (AM)": "1", "2026-10-27 (PM)": "1", "2026-10-29 (AM)": "1", "2026-10-29 (PM)": "SB", "2026-10-30 (AM)": "1", "2026-11-02 PM": "1", "2026-11-02 (AM)": "SB", "2026-11-04 AM": "1"} },
+{ name: "TAN XUE JI", data: {"2026-10-15": "SB", "2026-10-19": "1", "2026-10-20 (PM)": "1", "2026-10-21": "1", "2026-10-22": "SB", "2026-10-23": "1", "2026-10-26 (AM)": "1", "2026-10-27 (PM)": "1", "2026-10-29 (AM)": "SB", "2026-11-02 (AM)": "1", "2026-11-03 AM": "1", "2026-11-04 AM": "SB"} },
+{ name: "Teo Hua-Yue, Janice", data: {"2026-10-15": "SB", "2026-10-19": "1", "2026-10-20 (PM)": "1", "2026-10-21": "1", "2026-10-26 (AM)": "1", "2026-10-26 (PM)": "SB", "2026-10-27 (PM)": "1", "2026-10-28 (AM)": "1", "2026-10-29 (AM)": "1", "2026-10-30 (AM)": "1", "2026-11-02 (AM)": "1", "2026-11-03 AM": "SB", "2026-11-03 PM": "1"} },
+{ name: "Wong Sue Jin", data: {"2026-10-15": "SB", "2026-10-19": "1", "2026-10-20 (PM)": "1", "2026-10-22": "1", "2026-10-26 (AM)": "1", "2026-10-27 (PM)": "1", "2026-10-29 (AM)": "SB", "2026-11-03 PM": "SB", "2026-11-04 AM": "1", "2026-11-10 AM": "1", "2026-11-10 PM": "1"} },
+{ name: "Wong Weng Han", data: {"2026-10-15": "1", "2026-10-19": "1", "2026-10-20 (PM)": "1", "2026-10-23": "1", "2026-10-26 (AM)": "SB", "2026-10-26 (PM)": "1", "2026-10-27 (PM)": "1", "2026-10-28 (AM)": "SB", "2026-10-29 (AM)": "1", "2026-11-02 (AM)": "SB", "2026-11-03 AM": "1"} },
+{ name: "Zhan Huili", data: {"2026-10-19": "1", "2026-10-21": "1", "2026-10-22": "1", "2026-10-26 (AM)": "SB", "2026-10-26 (PM)": "1", "2026-10-27 (AM)": "1", "2026-10-27 (PM)": "SB", "2026-10-28 (AM)": "1", "2026-10-29 (AM)": "1", "2026-11-03 AM": "1", "2026-11-03 PM": "1", "2026-11-10 AM": "SB"} },
+{ name: "Tan Seok Gek (Scribe)", data: {"2026-10-27 (PM)": "1", "2026-10-29 (AM)": "1", "2026-11-02 (AM)": "1", "2026-11-10 AM": "1"} }
+];
+const allDates = [
+"2026-10-07", "2026-10-15", "2026-10-15 (1)", "2026-10-19", "2026-10-20 (AM)", "2026-10-20 (PM)",
+"2026-10-21", "2026-10-22", "2026-10-23", "2026-10-26 (AM)", "2026-10-26 (PM)", "2026-10-27 (AM)",
+"2026-10-27 (PM)", "2026-10-28 (AM)", "2026-10-28 (PM)", "2026-10-29 (AM)", "2026-10-29 (PM)",
+"2026-10-30 (AM)", "2026-10-30 (PM)", "2026-11-02 (AM)", "2026-11-02 PM", "2026-11-03 AM",
+"2026-11-03 PM", "2026-11-04 AM", "2026-11-10 AM", "2026-11-10 PM"
+];
+const sessionMeta = {
+"2026-10-07": [{ paper: "7155 P2 COMPUTING", time: "08:00 - 10:30", venues: ["R1 (COM Lab 1)"] }],
+"2026-10-15": [{ paper: "1184/03 ENGLISH LC", time: "14:00 - 14:45", venues: ["R1 (4-7 CR)", "R2 (4-6 CR)", "R3 (5-1 CR)"] }],
+"2026-10-15 (1)": [{ paper: "1153/03 CHINESE B LC", time: "16:30 - 17:00", venues: ["R1 (5-1 CR)"] }],
+"2026-10-19": [
+{ paper: "1184/01 ENGLISH LANGUAGE P1", time: "13:30 - 15:20", venues: ["R1", "R2", "R3 (AA)", "R4", "R5"] },
+{ paper: "1184/02 ENGLISH LANGUAGE P2", time: "16:05 - 17:55", venues: ["R1", "R2", "R3 (AA)", "R4", "R5"] }
+],
+"2026-10-20 (AM)": [{ paper: "7155/01 COMPUTING", time: "08:00 - 10:00", venues: ["R1 (5-1 CR)"] }],
+"2026-10-20 (PM)": [{ paper: "2260/02 GEOGRAPHY / 2261/02 HISTORY", time: "14:00 - 15:45", venues: ["R1 (AA)", "R2", "R3", "R4", "R5"] }],
+"2026-10-21": [{ paper: "4052/01 MATHEMATICS", time: "14:00 - 16:15", venues: ["R1", "R2 (AA)", "R3", "R4"] }],
+"2026-10-22": [{ paper: "2279/01 GEOGRAPHY", time: "14:00 - 15:45", venues: ["R1 (AA)", "R2"] }],
+"2026-10-23": [{ paper: "4052/02 MATHEMATICS", time: "14:30 - 16:45", venues: ["R1", "R2 (AA)", "R3", "R4"] }],
+"2026-10-26 (AM)": [{ paper: "2260/01 SS(GEO) / 2261/01 SS(HIST)", time: "08:00 - 09:45", venues: ["R1 (AA)", "R2", "R3", "R4", "R5"] }],
+"2026-10-26 (PM)": [{ paper: "4049/01 ADDITIONAL MATHEMATICS", time: "14:00 - 16:15", venues: ["R1", "R2 (AA)", "R3"] }],
+"2026-10-27 (AM)": [{ paper: "2279/02 GEOGRAPHY", time: "08:00 - 09:45", venues: ["R1", "R2 (AA)"] }],
+"2026-10-27 (PM)": [
+{ paper: "2065/02 LITERATURE IN ENGLISH", time: "10:30 - 12:00", venues: ["R1", "R2 (AA)"] },
+{ paper: "5086/03 SCIENCE / 6092/02 CHEMISTRY", time: "14:00 - 15:15", venues: ["R1 (Scribe)", "R2", "R3 (AA)"] }
+],
+"2026-10-28 (AM)": [{ paper: "4049/02 ADDITIONAL MATHEMATICS", time: "08:00 - 10:15", venues: ["R1", "R2 (AA)", "R3"] }],
+"2026-10-28 (PM)": [{ paper: "7087/01 PRINCIPLES OF ACCOUNTS", time: "14:00 - 15:00", venues: ["R4"] }],
+"2026-10-29 (AM)": [
+{ paper: "2065/01 LITERATURE IN ENGLISH", time: "08:00 - 09:40", venues: ["R1 (AA)", "R2"] },
+{ paper: "5086/02 SCIENCE / 6091/02 PHYSICS", time: "14:00 - 15:15", venues: ["R1 (Scribe)", "R2", "R3 (AA)"] }
+],
+"2026-10-29 (PM)": [],
+"2026-10-30 (AM)": [{ paper: "6093/02 BIOLOGY", time: "08:00 - 09:45", venues: ["R1", "R2 (AA)"] }],
+"2026-10-30 (PM)": [{ paper: "7087/02 PRINCIPLES OF ACCOUNTS", time: "14:30 - 16:30", venues: ["R1"] }],
+"2026-11-02 (AM)": [{ paper: "DESIGN & TECH / ART P1", time: "08:00 - 10:00", venues: ["R1", "R2", "R3 (AA)", "R4 (Scribe)"] }],
+"2026-11-02 PM": [{ paper: "6097/01 NUTRITION & FOOD SCIENCE", time: "14:00 - 16:00", venues: ["R1", "R2 (AA)"] }],
+"2026-11-03 AM": [{ paper: "MTL HIGHER / STANDARD PAPERS", time: "08:00 - 10:00", venues: ["R1 (AA)", "R2", "R3", "R4"] }],
+"2026-11-03 PM": [{ paper: "MTL P1/P2 SECONDARY TIMELINE", time: "11:00 - 12:45", venues: ["R1 (AA)", "R2", "R3", "R4"] }],
+"2026-11-04 AM": [
+{ paper: "1153/01 CHINESE B / 6092/01 CHEM", time: "08:00 - 09:00", venues: ["R1", "R2 (AA)"] },
+{ paper: "6091/01 PHYSICS SHIFT", time: "14:30 - 15:30", venues: ["R1 (AA)", "R2"] }
+],
+"2026-11-10 AM": [{ paper: "5086/01 SCIENCE (PHY/CHEM) P1", time: "08:00 - 09:00", venues: ["R1 (Scribe)", "R2", "R3 (AA)"] }],
+"2026-11-10 PM": [{ paper: "6091/01 BIOLOGY OBJECTIVE", time: "14:00 - 15:00", venues: ["R1 (AA)", "R2"] }]
+};
+window.addEventListener('DOMContentLoaded', () => {
+const staffSelect = document.getElementById('staff-select');
+staffRoster.forEach((staff, idx) => {
+const opt = document.createElement('option');
+opt.value = idx;
+opt.textContent = staff.name;
+staffSelect.appendChild(opt);
+});
+const dateSelect = document.getElementById('date-select');
+allDates.forEach(d => {
+const opt = document.createElement('option');
+opt.value = d;
+opt.textContent = d;
+dateSelect.appendChild(opt);
+});
+renderStaffView();
+renderDateView();
+});
+function switchTab(view) {
+document.getElementById('tab-staff').classList.toggle('active-tab', view === 'staff');
+document.getElementById('tab-date').classList.toggle('active-tab', view === 'date');
+document.getElementById('view-staff').classList.toggle('hidden', view !== 'staff');
+document.getElementById('view-date').classList.toggle('hidden', view !== 'date');
+}
+function renderStaffView() {
+const index = document.getElementById('staff-select').value;
+const staff = staffRoster[index];
+const tbody = document.getElementById('staff-table-body');
+tbody.innerHTML = '';
+let duties = 0, sbs = 0;
+allDates.forEach(date => {
+const currentVal = staff.data[date] || "";
+if(currentVal === "1") duties++;
+if(currentVal.toUpperCase() === "SB") sbs++;
+const tr = document.createElement('tr');
+tr.className = "hover:bg-gray-800/20 border-b border-gray-800/40 transition duration-150 text-sm";
+let context = "No duties mapped";
+if(sessionMeta[date] && sessionMeta[date].length > 0) {
+context = sessionMeta[date].map(m => <span class='text-gray-300 font-medium'>${m.paper}</span> <span class='text-blue-400 font-mono text-xs'>(${m.time})</span>).join(" | ");
+}
+// Row-level contextual color badges
+let rowStyle = "";
+if (currentVal === "1") rowStyle = "bg-emerald-500/5";
+if (currentVal.toUpperCase() === "SB") rowStyle = "bg-amber-500/5";
+tr.className += " " + rowStyle;
+tr.innerHTML = `
+${date}
+${context}
+`;
+tbody.appendChild(tr);
+});
+document.getElementById('staff-total-count').textContent = duties;
+document.getElementById('staff-sb-count').textContent = sbs;
+}
+// Inline Updater Routine
+function updateCell(staffIndex, date, newVal) {
+staffRoster[staffIndex].data[date] = newVal;
+renderStaffView();
+renderDateView();
+}
+function renderDateView() {
+const selectedDate = document.getElementById('date-select').value;
+const container = document.getElementById('date-sessions-container');
+container.innerHTML = '';
+const sessions = sessionMeta[selectedDate] || [];
+const activeInvigilators = [];
+const activeStandbys = [];
+staffRoster.forEach(staff => {
+const status = staff.data[selectedDate] || "";
+if (status === "1") activeInvigilators.push(staff.name);
+if (status.toUpperCase() === "SB") activeStandbys.push(staff.name);
+});
+if(sessions.length === 0) {
+container.innerHTML = <div class="col-span-full p-12 text-center text-gray-500 glass-card rounded-2xl border border-gray-800/60 font-medium">No examination papers mapped to this day block.</div>;
+return;
+}
+sessions.forEach(session => {
+const card = document.createElement('div');
+card.className = "glass-card rounded-2xl overflow-hidden shadow-xl border border-gray-800/80 hover:border-gray-700/60 transition duration-300 flex flex-col justify-between";
+card.innerHTML = <div> <div class="bg-gray-950/60 p-5 border-b border-gray-800/80 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"> <div> <span class="inline-block bg-blue-500/10 text-blue-400 border border-blue-500/20 font-bold text-[10px] tracking-wider uppercase px-2 py-0.5 rounded-md mb-1">Active Roster</span> <h4 class="text-base font-bold text-white tracking-tight">${session.paper}</h4> </div> <div class="text-xs font-mono bg-blue-500/10 px-3 py-1.5 rounded-xl border border-blue-500/20 font-bold text-blue-400"> 🕒 ${session.time} </div> </div> <div class="p-5 space-y-4"> <div> <h5 class="text-[10px] font-bold uppercase tracking-widest text-emerald-400 mb-2">Deployed Array (${activeInvigilators.length})</h5> ${activeInvigilators.length > 0 ?
+
+${activeInvigilators.map(name => <span class="bg-emerald-500/5 text-emerald-400 border border-emerald-500/10 px-3 py-1.5 rounded-xl text-xs font-medium inline-flex items-center gap-1.5">👤 ${name}</span>).join('')}
+
+:No personnel mapped to this slot.} </div> <div class="pt-2"> <h5 class="text-[10px] font-bold uppercase tracking-widest text-amber-400 mb-2">Standby Pools (${activeStandbys.length})</h5> ${activeStandbys.length > 0 ? 
+
+${activeStandbys.map(name => <span class="bg-amber-500/5 text-amber-400 border border-amber-500/10 px-3 py-1.5 rounded-xl text-xs font-medium inline-flex items-center gap-1.5">📞 ${name}</span>).join('')}
+
+:No standbys flagged active.} </div> </div> </div> <div class="bg-gray-950/40 px-5 py-3.5 border-t border-gray-800/40 text-xs text-gray-400"> <span class="font-bold text-gray-500 uppercase tracking-wider text-[10px] mr-1.5">Venues:</span> ${session.venues.join(' , ')} </div> ;
+container.appendChild(card);
+});
+}
+// Spreadsheet Engine Data Conversion
+function exportToExcel() {
+const dataToSheet = staffRoster.map(staff => {
+let row = { "Invigilator Profile": staff.name };
+let tDuties = 0, tSB = 0;
+allDates.forEach(d => {
+const val = staff.data[d] || "";
+row[d] = val;
+if(val === "1") tDuties++;
+if(val.toUpperCase() === "SB") tSB++;
+});
+row["Total Duties"] = tDuties;
+row["Total Standby Sessions"] = tSB;
+return row;
+});
+const ws = XLSX.utils.json_to_sheet(dataToSheet);
+const wb = XLSX.utils.book_new();
+XLSX.utils.book_append_sheet(workbook, worksheet, "O-Level Invigilation Roster");
+XLSX.writeFile(workbook, "O_Level_Invigilation_Schedule_Export_2026.xlsx");
+}
+
+
